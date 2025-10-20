@@ -90,4 +90,25 @@ seuratV3Run <- function(input, assay = NULL, reference = NULL,
                   preserve.order = preserve_order, eps = eps,
                   verbose = verbose)
   )
+  anchorset <- FindIntegrationAnchors(object.list = input, assay = assay,
+                                      reference = reference,
+                                      anchor.features = anchor_features,
+                                      scale = scale,
+                                      normalization.method = normalization_method,
+                                      sct.clip.range = sct_clip_range,
+                                      reduction = reduction, l2.norm = l2_norm,
+                                      dims = dims, k.anchor = k_anchor,
+                                      k.filter = k_filter, k.score = k_score,
+                                      max.features = max_features,
+                                      nn.method = nn_method, n.trees = n_trees,
+                                      eps = eps, verbose = verbose)
+  out <- IntegrateData(anchorset = anchorset, new.assay.name = new_assay_name,
+                       normalization.method = normalization_method,
+                       features = features,
+                       features.to.integrate = features_to_integrate,
+                       dims = dims, k.weight = k_weight,
+                       weight.reduction = weight_reduction,
+                       sd.weight = sd_weight, sample.tree = sample_tree,
+                       preserve.order = preserve_order, eps = eps,
+                       verbose = verbose)
 }
