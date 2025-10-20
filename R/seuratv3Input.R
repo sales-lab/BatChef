@@ -104,6 +104,7 @@ setMethod("seuratv3Input", "AnnDataR6",  function(input, batch, features, pca_na
       so <- as.Seurat(sce)
     })
 
+    so <- as.Seurat(sce)
     so@reductions[["pca"]] <- CreateDimReducObject(embeddings = pca,
                                                    loadings = loadings,
                                                    key = "pca_",
