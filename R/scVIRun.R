@@ -172,7 +172,8 @@ scVIRun <- function(input, batch, assay_type = "counts", layer = NULL, labels_ke
                   load_sparse_tensor = load_sparse_tensor,
                   batch_size = as.integer(batch_size), early_stopping = early_stopping,
                   datasplitter_kwargs = datasplitter_kwargs,
-                  plan_kwargs = plan_kwargs, datamodule = datamodule))
+                  plan_kwargs = plan_kwargs, datamodule = datamodule,
+                  logger = FALSE))
     do.call(model_scvi$train, arg)
 
     latent <- model_scvi$get_latent_representation(adata = andata,
