@@ -100,7 +100,7 @@ setMethod("seuratv3Input", "AnnDataR6",  function(input, batch, features, pca_na
     sce <- AnnData2SCE(x, X_name = "counts")
 
     # NOTE: until https://github.com/satijalab/seurat/issues/9850 is fixed.
-    so <- suppressWarningsByMsg("was deprecated", as.Seurat(sce))
+    so <- suppressWarningsByMsg("deprecated", as.Seurat(sce))
     
     so@reductions[["pca"]] <- CreateDimReducObject(embeddings = pca,
                                                    loadings = loadings,
