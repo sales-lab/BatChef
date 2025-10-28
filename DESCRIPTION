@@ -24,10 +24,18 @@ RoxygenNote: 7.3.3
 LinkingTo: Rcpp, RcppArmadillo
 Imports: 
     anndata,
+    aricode,
     basilisk,
     batchelor,
+    cluster,
+    datawizard,
+    e1071,
+    fitdistrplus,
     harmony,
+    igraph,
     limma,
+    Matrix,
+    mclust,
     methods,
     parallel,
     purrr,
@@ -38,6 +46,7 @@ Imports:
     S4Vectors,
     scCustomize,
     scMerge,
+    scran,
     scrapper,
     Seurat,
     SeuratObject,
@@ -59,3 +68,4 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+LazyData: true
