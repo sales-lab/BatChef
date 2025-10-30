@@ -252,6 +252,7 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_: false
           DISPLAY: 99.0
+        timeout-minutes: 30
         run: |
           options(crayon.enabled = TRUE)
           rcmdcheck::rcmdcheck(
