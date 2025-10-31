@@ -228,6 +228,20 @@ jobs:
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = FALSE, upgrade = TRUE, force = TRUE)
         shell: Rscript {0}
 
+      - name: Detect pyenv and virtualenv cache directories
+        run: |
+          BatChef:::print_basilisk_cache_paths()
+        shell: Rscript {0} >> $GITHUB_ENV
+
+      - name: Cache pyenv and virtualenv
+        if: "!contains(github.event.head_commit.message, '/nocache')"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.PYENV_CACHE_DIR }}
+            ${{ env.VIRTUALENV_CACHE_DIR }}
+          key: ${{ runner.os }}-build-${{ hashFiles('R/basilisk.R') }}-${{ inputs.cache-version }}
+
       - name: Install BiocGenerics
         if:  env.has_RUnit == 'true'
         run: |
