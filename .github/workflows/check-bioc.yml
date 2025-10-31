@@ -228,19 +228,30 @@ jobs:
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = FALSE, upgrade = TRUE, force = TRUE)
         shell: Rscript {0}
 
-      - name: Detect pyenv and virtualenv cache directories
+      - name: Free some space
         run: |
-          BatChef:::print_basilisk_cache_paths()
-        shell: Rscript {0} >> $GITHUB_ENV
+          rm -rf /__t/CodeQL /__t/go /__t/node
+        shell: bash
 
-      - name: Cache pyenv and virtualenv
-        if: "!contains(github.event.head_commit.message, '/nocache')"
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.PYENV_CACHE_DIR }}
-            ${{ env.VIRTUALENV_CACHE_DIR }}
-          key: ${{ runner.os }}-build-${{ hashFiles('R/basilisk.R') }}-${{ inputs.cache-version }}
+      # - name: Calculate and Sort Directory Sizes
+      #   run: |
+      #     echo "Calculating directory sizes..."
+      #     du -h --max-depth=3 / | sort -rh
+      #   shell: bash
+
+      # - name: Detect pyenv and virtualenv cache directories
+      #   run: |
+      #     BatChef:::print_basilisk_cache_paths()
+      #   shell: Rscript {0} >> $GITHUB_ENV
+
+      # - name: Cache pyenv and virtualenv
+      #   if: "!contains(github.event.head_commit.message, '/nocache')"
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ${{ env.PYENV_CACHE_DIR }}
+      #       ${{ env.VIRTUALENV_CACHE_DIR }}
+      #     key: ${{ runner.os }}-build-${{ hashFiles('R/basilisk.R') }}-${{ inputs.cache-version }}
 
       - name: Install BiocGenerics
         if:  env.has_RUnit == 'true'
@@ -268,15 +279,43 @@ jobs:
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
 
-      - name: Run CMD check
+      # - name: Run CMD check
+      #   env:
+      #     _R_CHECK_CRAN_INCOMING_: false
+      #     _R_CHECK_NULL_DEVICE_: true
+      #     DISPLAY: 99.0
+      #   timeout-minutes: 30
+      #   run: |
+      #     devtools::check()
+      #   shell: Rscript {0}
+
+      - name: Run CMD check and show python-build logs on failure
         env:
           _R_CHECK_CRAN_INCOMING_: false
           _R_CHECK_NULL_DEVICE_: true
           DISPLAY: 99.0
         timeout-minutes: 30
         run: |
-          devtools::check()
-        shell: Rscript {0}
+          set -o pipefail
+          if Rscript -e 'devtools::check()' ; then
+            echo "devtools::check passed successfully"
+          else
+            echo "=== devtools::check failed (exit rc) — searching for python-build logs ==="
+            shopt -s nullglob
+            logs=(/tmp/python-build.*.log)
+            if [ "${#logs[@]}" -eq 0 ]; then
+              echo "No /tmp/python-build.*.log files found."
+            else
+              for f in "${logs[@]}"; do
+                echo "−−−−−START $f -----"
+                tail -n 500 "$f"
+                echo "----- END $f−−−−−"
+              done
+            fi
+            exit 1
+          fi
+        shell: bash
+
 
       ## Might need an to add this to the if:  && runner.os == 'Linux'
       - name: Reveal testthat details

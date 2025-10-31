@@ -2,7 +2,7 @@
 py_env <- BasiliskEnvironment(
   envname = "py_env",
   pkgname = "BatChef",
-  packages = c("python=3.12",
+  packages = c("python=3.12.2",
                "scanpy=1.11.4",
                "scipy=1.16.2",
                "anndata=0.12.2",
